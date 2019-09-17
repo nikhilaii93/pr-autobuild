@@ -12,8 +12,9 @@ DIR=/usr/bin
 parse_env
 
 echo "$GITHUB_EVENT_PATH"
+cat "$GITHUB_EVENT_PATH"
 
-exit 1
+exit 0
 
 readyToBuild=$(checkReadyToBuild $pr_num)
 
