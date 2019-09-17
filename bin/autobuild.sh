@@ -3,7 +3,7 @@
 set -Eeuxo pipefail
 
 # import variables and functions
-DIR=$(pwd)
+DIR=/usr/bin
 
 . "$DIR"/global-variables.sh
 . "$DIR"/util-methods.sh
