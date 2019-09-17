@@ -17,6 +17,12 @@ function parse_env {
 		echo "Set the GITHUB_TOKEN env variable."
 		exit 1
 	fi
+	if [[ -z "$GITHUB_NAME" ]]; then
+		echo "Set the GITHUB_NAME env variable."
+		exit 1
+	fi
+	GIT_NAME="$GITHUB_NAME"
+	GIT_TOKEN="$GITHUB_TOKEN"
 
 	# Approval count is integer
 	if [[ ! -z $DEFAULT_APPROVAL_COUNT_ENV ]]; then
