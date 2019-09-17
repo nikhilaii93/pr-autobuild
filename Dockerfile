@@ -5,7 +5,5 @@ LABEL "com.github.actions.icon"="activity"
 LABEL "com.github.actions.color"="red"
 RUN apt-get update && \
     apt-get install -y jq
-COPY . /bin
-WORKDIR /bin
-VOLUME /bin
+COPY /bin /usr/bin/
 ENTRYPOINT ["autobuild.sh"]
