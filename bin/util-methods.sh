@@ -25,23 +25,23 @@ function parse_env {
 	GIT_TOKEN="$GITHUB_TOKEN"
 
 	# Approval count is integer
-	if [[ ! -z $DEFAULT_APPROVAL_COUNT_ENV ]]; then
+	if [[ -n -z "$DEFAULT_APPROVAL_COUNT_ENV" ]]; then
 		DEFAULT_APPROVAL_COUNT=$DEFAULT_APPROVAL_COUNT_ENV
 	fi
 
-	if [[ ! -z "$BASE_BRANCH_ENV" ]]; then
+	if [[ -n -z "$BASE_BRANCH_ENV" ]]; then
 		BASE_BRANCH="$BASE_BRANCH_ENV"
 	fi
 
-	if [[ ! -z "$APPROVAL_TAG_ENV" ]]; then
+	if [[ -n -z "$APPROVAL_TAG_ENV" ]]; then
 		APPROVAL_TAG="$APPROVAL_TAG_ENV"
 	fi
 
-	if [[ ! -z "$COMMENT_BASED_BUILD_ENV" ]]; then
+	if [[ -n -z "$COMMENT_BASED_BUILD_ENV" ]]; then
 		COMMENT_BASED_BUILD="$COMMENT_BASED_BUILD"
 	fi
 
-	if [[ ! -z "$BUILD_COMMENT_ENV" ]]; then
+	if [[ -n -z "$BUILD_COMMENT_ENV" ]]; then
 		BUILD_COMMENT="$BUILD_COMMENT"
 	fi
 }
