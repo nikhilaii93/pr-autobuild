@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -Eeuxo pipefail
+set -Eexo pipefail
 
 function getMergeStatus {
     log "Function getMergeStatus"

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -Eeuxo pipefail
+set -Eexo pipefail
 
 function log {
     if [[ "$1" != *"Function"* ]] && [[ "$1" != *"Debug"* ]];

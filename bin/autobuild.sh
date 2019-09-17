@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -Eeuxo pipefail
+set -Eexo pipefail
 
 # import variables and functions
 DIR=/usr/bin
