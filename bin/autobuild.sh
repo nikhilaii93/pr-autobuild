@@ -11,7 +11,7 @@ DIR=/usr/bin
 
 parse_env
 
-echo "$GITHUB_CONTEXT"
+echo "$GITHUB_EVENT_PATH"
 
 exit 1
 
