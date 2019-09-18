@@ -38,15 +38,15 @@ function parse_env {
 	fi
 
 	if [[ ! -z "$COMMENT_BASED_BUILD_ENV" ]]; then
-		COMMENT_BASED_BUILD="$COMMENT_BASED_BUILD"
+		COMMENT_BASED_BUILD="$COMMENT_BASED_BUILD_ENV"
 	fi
 
 	if [[ ! -z "$BUILD_COMMENT_ENV" ]]; then
-		BUILD_COMMENT="$BUILD_COMMENT"
+		BUILD_COMMENT="$BUILD_COMMENT_ENV"
 	fi
 
 	if [[ ! -z "$PR_LABEL_ENV" ]]; then
-		PR_LABEL="$PR_LABEL_COMMENT"
+		PR_LABEL="$PR_LABEL_ENV"
 	fi
 }
 
