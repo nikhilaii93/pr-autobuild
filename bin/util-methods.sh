@@ -33,10 +33,6 @@ function parse_env {
 		BASE_BRANCH="$BASE_BRANCH_ENV"
 	fi
 
-	if [[ ! -z "$APPROVAL_TAG_ENV" ]]; then
-		APPROVAL_TAG="$APPROVAL_TAG_ENV"
-	fi
-
 	if [[ ! -z "$COMMENT_BASED_BUILD_ENV" ]]; then
 		COMMENT_BASED_BUILD="$COMMENT_BASED_BUILD_ENV"
 	fi
