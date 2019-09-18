@@ -5,7 +5,6 @@ set -Eexo pipefail
 # Constants
 # approval count is integer
 DEFAULT_APPROVAL_COUNT=2
-BASE_BRANCH=master
 PR_APPROVED='APPROVED'
 PR_LABEL=""
 COMMENT_BASED_BUILD=true

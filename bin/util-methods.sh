@@ -29,10 +29,6 @@ function parse_env {
 		DEFAULT_APPROVAL_COUNT=$DEFAULT_APPROVAL_COUNT_ENV
 	fi
 
-	if [[ ! -z "$BASE_BRANCH_ENV" ]]; then
-		BASE_BRANCH="$BASE_BRANCH_ENV"
-	fi
-
 	if [[ ! -z "$COMMENT_BASED_BUILD_ENV" ]]; then
 		COMMENT_BASED_BUILD="$COMMENT_BASED_BUILD_ENV"
 	fi

@@ -36,26 +36,6 @@ function isPROpenAndUnmerged {
     fi
 }
 
-function isPRCloseAndMerged {
-    log "Function isPRCloseAndMerged"
-
-    local pr_num=$1
-
-    local prDetails=$(getCall "$GIT_PR_API" "$pr_num")
-    local prStatus=$(echo "$prDetails" | jq -r '.state')
-    local mergeStatus=$(getMergeStatus "$pr_num")
-
-    log "Debug: PR status $prStatus of $pr_num"
-    log "Debug: Merge status $mergeStatus of $pr_num"
-
-    if [ "$prStatus" == 'closed' ] && [ "$mergeStatus" == "$MERGED_STATUS" ];
-    then 
-        echo true
-    else 
-        echo false
-    fi
-}
-
 function isApproved {
     log "Function isApproved"
 
@@ -129,11 +109,12 @@ function updatePR {
 
     local prDetails=$(getCall "$GIT_PR_API" "$pr_num")
     local prBranch=$(echo "$prDetails" | jq -r '.head.ref')
+    local baseBranch=$(echo "$prDetails" | jq -r '.base.ref')
 
     local updateStatus=$(curl -s -X POST -u "$GIT_NAME":"$GIT_TOKEN" -H "Content-Type: application/json" "$GIT_MERGE_API" -d ' 
     {
         "base": '\"$prBranch\"',
-        "head": '\"$BASE_BRANCH\"'
+        "head": '\"$base\"'
     }')
 
     local conflictCount=$(grep -o -i 'Merge Conflict' <<< "$updateStatus" | wc -l)
