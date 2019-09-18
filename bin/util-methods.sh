@@ -51,7 +51,7 @@ function check_labels () {
 	labels="$1"
 	for row in $(echo "${labels}" | jq -r '.[] | @base64'); do
     	_jq() {
-     		echo ${row} | base64 --decode | jq -r ${1}
+     		echo ${row} | base64 -d | jq -r ${1}
     	}
 
    		label_name=$(_jq '.name')
