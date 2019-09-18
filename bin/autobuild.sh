@@ -17,11 +17,11 @@ cat "$GITHUB_EVENT_PATH"
 action=$(jq --raw-output .action "$GITHUB_EVENT_PATH")
 
 if [ "$action" == "labeled" ]; then
-	pr_num=$(jq --raw-output .number "$GITHUB_EVENT_PATH")
+	pr_num=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
 elif [ "$action" == "submitted" ]; then
 	review_state=$(jq --raw-output .review.state "$GITHUB_EVENT_PATH")
 	if [ "$review_state" == "approved" ]; then
-		pr_num=$(jq --raw-output .number "$GITHUB_EVENT_PATH")	
+		pr_num=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")	
 	else
 		echo "Nothing to do for review $review_state"	
 		exit 0
