@@ -63,6 +63,17 @@ function check_labels () {
 	echo "$match"
 }
 
+function getCall {
+    gitApi="$1"
+    prNum="$2"
+
+    local getApi=$(printf "$gitApi" "$prNum")
+
+    local apiStatus=$(curl -s -u "$GIT_NAME":"$GIT_TOKEN" "$getApi")
+
+    echo "$apiStatus"
+}
+
 function review_set () {
     reviewSet+="$1,$2"$'\n'
 }
