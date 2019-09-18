@@ -44,6 +44,27 @@ function parse_env {
 	if [[ ! -z "$BUILD_COMMENT_ENV" ]]; then
 		BUILD_COMMENT="$BUILD_COMMENT"
 	fi
+
+	if [[ ! -z "$PR_LABEL_ENV" ]]; then
+		PR_LABEL="$PR_LABEL_COMMENT"
+	fi
+}
+
+function check_labels () {
+	match=false
+	labels="$1"
+	for row in $(echo "${labels}" | jq -r '.[] | @base64'); do
+    	_jq() {
+     		echo ${row} | base64 --decode | jq -r ${1}
+    	}
+
+   		label_name=$(_jq '.name')
+   		if [ "$label_name" == "$PR_LABEL" ]; then
+   			match=true
+   			break
+   		fi
+	done
+	echo "$match"
 }
 
 function review_set () {
