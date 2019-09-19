@@ -3,35 +3,30 @@
 set -Eexo pipefail
 
 # Constants
-# approval count is integer
-DEFAULT_APPROVAL_COUNT=2
-PR_APPROVED='APPROVED'
-PR_LABEL=""
-COMMENT_BASED_BUILD=true
-BUILD_COMMENT="OK to test"
+# Approval count is integer
+export DEFAULT_APPROVAL_COUNT=2
+export PR_APPROVED='APPROVED'
+export PR_LABEL=""
+export COMMENT_BASED_BUILD=true
+export BUILD_COMMENT="OK to test"
 
-# Variables
-BUILD_UPDATE_TIME=10
+# DO NOT CHANGE THIS
+export BUILD_UPDATE_TIME=10
 
 # PR Status
-MERGED_STATUS='MERGED'
-UNMERGED_STATUS='UNMERGED'
-ALREADY_MERGED_STATUS='ALREADY_MERGED'
-MERGE_FAILED_STATUS='MERGE_FAILED'
-BUILD_FAILED_STATUS='BUILD_FAILED'
-NOT_READY_STATUS='NOT_READY'
-CONFLICT_STATUS='CONFLICT'
-MERGE_SUCCESS_MESSAGE='Pull Request successfully merged'
-
-
-
-PR_STATE=()
-PR_NUM=()
+export MERGED_STATUS='MERGED'
+export UNMERGED_STATUS='UNMERGED'
+export ALREADY_MERGED_STATUS='ALREADY_MERGED'
+export MERGE_FAILED_STATUS='MERGE_FAILED'
+export BUILD_FAILED_STATUS='BUILD_FAILED'
+export NOT_READY_STATUS='NOT_READY'
+export CONFLICT_STATUS='CONFLICT'
+export MERGE_SUCCESS_MESSAGE='Pull Request successfully merged'
 
 # Git APIs
-GIT_PR_API="https://api.github.com/repos/"$GITHUB_REPOSITORY"/pulls/%s"
-GIT_ISSUES_COMMENTS_API="https://api.github.com/repos/"$GITHUB_REPOSITORY"/issues/%s/comments"
-GIT_MERGE_API="https://api.github.com/repos/"$GITHUB_REPOSITORY"/merges"
-GIT_REVIEWS_API="https://api.github.com/repos/"$GITHUB_REPOSITORY"/pulls/%s/reviews"
-GIT_COMMENT_API="https://api.github.com/repos/"$GITHUB_REPOSITORY"/pulls/%s/comments"
-GIT_PR_MERGE_API="https://api.github.com/repos/"$GITHUB_REPOSITORY"/pulls/%s/merge?"
+export GIT_PR_API="https://api.github.com/repos/$GITHUB_REPOSITORY/pulls/%s"
+export GIT_ISSUES_COMMENTS_API="https://api.github.com/repos/$GITHUB_REPOSITORY/issues/%s/comments"
+export GIT_MERGE_API="https://api.github.com/repos/$GITHUB_REPOSITORY/merges"
+export GIT_REVIEWS_API="https://api.github.com/repos/$GITHUB_REPOSITORY/pulls/%s/reviews"
+export GIT_COMMENT_API="https://api.github.com/repos/$GITHUB_REPOSITORY/pulls/%s/comments"
+export GIT_PR_MERGE_API="https://api.github.com/repos/$GITHUB_REPOSITORY/pulls/%s/merge?"

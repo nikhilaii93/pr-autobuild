@@ -5,8 +5,17 @@ set -Eexo pipefail
 # import variables and functions
 DIR=/usr/bin
 
+
+# See: https://github.com/koalaman/shellcheck/wiki/SC1090
+# Don't the import order
+# shellcheck disable=SC1091
+# shellcheck source=/usr/bin
 . "$DIR"/global-variables.sh
+# shellcheck disable=SC1091
+# shellcheck source=/usr/bin
 . "$DIR"/util-methods.sh
+# shellcheck disable=SC1091
+# shellcheck source=/usr/bin
 . "$DIR"/git-api.sh
 
 parse_env
@@ -39,7 +48,7 @@ fi
 
 labels=$(jq --raw-output .pull_request.labels "$GITHUB_EVENT_PATH")
 
-if [[ ! -z "$PR_LABEL" ]]; then
+if [[ -n "$PR_LABEL" ]]; then
 	match=$(check_labels "$labels")
 	if [ "$match" == false ]; then
 		echo "$PR_LABEL not found on PR: $pr_num"
@@ -48,11 +57,11 @@ if [[ ! -z "$PR_LABEL" ]]; then
 fi
 
 if [ "$event" == "pr-build-success" ]; then
-	
-	readyToMerge=$(checkReadyToBuildOrMerge $pr_num)
+
+	readyToMerge=$(checkReadyToBuildOrMerge "$pr_num")
 
 	if [ "$readyToMerge" == true ]; then
-		mergeStatus=$(mergePR $pr_num)
+		mergeStatus=$(mergePR "$pr_num")
 		mergeSuccess=$(grep -o -i "$MERGE_SUCCESS_MESSAGE" <<< "$mergeStatus" | wc -l)
 
 		if [ $mergeSuccess -eq 1 ]; then 
@@ -64,7 +73,7 @@ if [ "$event" == "pr-build-success" ]; then
         fi
 	fi
 else 
-	readyToBuild=$(checkReadyToBuildOrMerge $pr_num)
+	readyToBuild=$(checkReadyToBuildOrMerge "$pr_num")
 
 	if [ "$readyToBuild" == true ]; then
 		if [ "$COMMENT_BASED_BUILD" = true ]; then

@@ -21,24 +21,24 @@ function parse_env {
 		echo "Set the GITHUB_NAME env variable."
 		exit 1
 	fi
-	GIT_NAME="$GITHUB_NAME"
-	GIT_TOKEN="$GITHUB_TOKEN"
+	export GIT_NAME="$GITHUB_NAME"
+	export GIT_TOKEN="$GITHUB_TOKEN"
 
 	# Approval count is integer
-	if [[ ! -z "$DEFAULT_APPROVAL_COUNT_ENV" ]]; then
-		DEFAULT_APPROVAL_COUNT=$DEFAULT_APPROVAL_COUNT_ENV
+	if [[ -n "$DEFAULT_APPROVAL_COUNT_ENV" ]]; then
+		export DEFAULT_APPROVAL_COUNT=$DEFAULT_APPROVAL_COUNT_ENV
 	fi
 
-	if [[ ! -z "$COMMENT_BASED_BUILD_ENV" ]]; then
-		COMMENT_BASED_BUILD="$COMMENT_BASED_BUILD_ENV"
+	if [[ -n "$COMMENT_BASED_BUILD_ENV" ]]; then
+		export COMMENT_BASED_BUILD="$COMMENT_BASED_BUILD_ENV"
 	fi
 
-	if [[ ! -z "$BUILD_COMMENT_ENV" ]]; then
-		BUILD_COMMENT="$BUILD_COMMENT_ENV"
+	if [[ -n "$BUILD_COMMENT_ENV" ]]; then
+		export BUILD_COMMENT="$BUILD_COMMENT_ENV"
 	fi
 
-	if [[ ! -z "$PR_LABEL_ENV" ]]; then
-		PR_LABEL="$PR_LABEL_ENV"
+	if [[ -n "$PR_LABEL_ENV" ]]; then
+		export PR_LABEL="$PR_LABEL_ENV"
 	fi
 }
 
@@ -47,7 +47,7 @@ function check_labels () {
 	labels="$1"
 	for row in $(echo "${labels}" | jq -r '.[] | @base64'); do
     	_jq() {
-     		echo ${row} | base64 -d | jq -r ${1}
+     		echo "${row}" | base64 -d | jq -r "${1}"
     	}
 
    		label_name=$(_jq '.name')
@@ -63,9 +63,11 @@ function getCall {
     gitApi="$1"
     prNum="$2"
 
-    local getApi=$(printf "$gitApi" "$prNum")
+    local getApi
+    getApi=$(printf "$gitApi" "$prNum")
 
-    local apiStatus=$(curl -s -u "$GIT_NAME":"$GIT_TOKEN" "$getApi")
+    local apiStatus
+    apiStatus=$(curl -s -u "$GIT_NAME":"$GIT_TOKEN" "$getApi")
 
     echo "$apiStatus"
 }
@@ -76,7 +78,7 @@ function review_set () {
 
 function review_get () {
     state=$(echo "$reviewSet" | grep "^$1," | sed -e "s/^$1,//" | tail -n 1)
-    echo $state
+    echo "$state"
 }
 
 function review_flush () {
@@ -88,8 +90,8 @@ function login_set () {
 }
 
 function login_get () {
-    count=$(echo "$loginSet" | grep "$1," | wc -l)
-    echo $count
+    count=$(echo "$loginSet" | grep -c "$1,")
+    echo "$count"
 }
 
 function login_flush () {

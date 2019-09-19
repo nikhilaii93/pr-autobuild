@@ -5,9 +5,11 @@ set -Eexo pipefail
 function getMergeStatus {
     log "Function getMergeStatus"
 
-    local pr_num=$1
+    local pr_num
+    pr_num=$1
 
-    local mergeStatus=$(getCall "$GIT_PR_MERGE_API" "$pr_num")
+    local mergeStatus
+    mergeStatus=$(getCall "$GIT_PR_MERGE_API" "$pr_num")
 
     if [[ "$mergeStatus" == *"Not Found"* ]]; then
         echo "$UNMERGED_STATUS"
@@ -19,11 +21,15 @@ function getMergeStatus {
 function isPROpenAndUnmerged {
     log "Function isPROpenAndUnmerged"
 
-    local pr_num=$1
+    local pr_num
+    pr_num=$1
 
-    local prDetails=$(getCall "$GIT_PR_API" "$pr_num")
-    local prStatus=$(echo "$prDetails" | jq -r '.state')
-    local mergeStatus=$(getMergeStatus "$pr_num")
+    local prDetails
+    prDetails=$(getCall "$GIT_PR_API" "$pr_num")
+    local prStatus
+    prStatus=$(echo "$prDetails" | jq -r '.state')
+    local mergeStatus
+    mergeStatus=$(getMergeStatus "$pr_num")
 
     log "Debug: PR status $prStatus of $pr_num"
     log "Debug: Merge status $mergeStatus of $pr_num"
@@ -39,14 +45,20 @@ function isPROpenAndUnmerged {
 function isApproved {
     log "Function isApproved"
 
-    local approvalCount=0
-    local prStatus="$1"
+    local approvalCount
+    approvalCount=0
+    local prStatus
+    prStatus="$1"
 
     # States are returned in chronological order
-    local loginNames=($(jq -r '.[].user.login' <<< "${prStatus}"))
-    local reviewStates=($(jq -r '.[].state' <<< "${prStatus}"))
+    # See: https://github.com/koalaman/shellcheck/wiki/SC2207
+    local loginNames=()
+    while IFS='' read -r line; do loginNames+=("$line"); done < <(jq -r '.[].user.login' <<< "${prStatus}")
+    local reviewStates=()
+    while IFS='' read -r line; do reviewStates+=("$line"); done < <(jq -r '.[].state' <<< "${prStatus}")
 
-    local j=0
+    local j
+    j=0
 
     # Store all reviews
     while [ ${#loginNames[@]} -gt $j ]; do
@@ -58,16 +70,19 @@ function isApproved {
     
     local i=0
     while [ ${#loginNames[@]} -gt $i ]; do
-        local loginName="${loginNames[$i]}"
+        local loginName
+        loginName="${loginNames[$i]}"
 
-        local loginCount=$(login_get $loginName)
+        local loginCount
+        loginCount=$(login_get $loginName)
         
         if [ $loginCount -eq 0 ]; then
 
             login_set "$loginName"
 
             # Get the latest review
-            local latestState=$(review_get $loginName)
+            local latestState
+            latestState=$(review_get "$loginName")
             
             log "Debug: Latest state $latestState for $loginName"
 
@@ -104,20 +119,25 @@ function isApproved {
 function updatePR {
     log "Function updatePR"
 
-    local pr_num=$1
+    local pr_num
+    pr_num=$1
 
+    local prDetails
+    prDetails=$(getCall "$GIT_PR_API" "$pr_num")
+    local prBranch
+    prBranch=$(echo "$prDetails" | jq -r '.head.ref')
+    local baseBranch
+    baseBranch=$(echo "$prDetails" | jq -r '.base.ref')
 
-    local prDetails=$(getCall "$GIT_PR_API" "$pr_num")
-    local prBranch=$(echo "$prDetails" | jq -r '.head.ref')
-    local baseBranch=$(echo "$prDetails" | jq -r '.base.ref')
-
-    local updateStatus=$(curl -s -X POST -u "$GIT_NAME":"$GIT_TOKEN" -H "Content-Type: application/json" "$GIT_MERGE_API" -d ' 
+    local updateStatus
+    updateStatus=$(curl -s -X POST -u "$GIT_NAME":"$GIT_TOKEN" -H "Content-Type: application/json" "$GIT_MERGE_API" -d ' 
     {
         "base": '\"$prBranch\"',
-        "head": '\"$base\"'
+        "head": '\"$baseBranch\"'
     }')
 
-    local conflictCount=$(grep -o -i 'Merge Conflict' <<< "$updateStatus" | wc -l)
+    local conflictCount
+    conflictCount=$(grep -o -i 'Merge Conflict' <<< "$updateStatus" | wc -l)
 
     if [ $conflictCount -eq 0 ];
     then
@@ -131,13 +151,18 @@ function updatePR {
 function checkReadyToBuildOrMerge {
     log "Function checkReadyToBuild"
 
-    local pr_num=$1
+    local pr_num
+    pr_num=$1
 
-    local reviewDetails=$(getCall "$GIT_REVIEWS_API" "$pr_num")
+    local reviewDetails
+    reviewDetails=$(getCall "$GIT_REVIEWS_API" "$pr_num")
 
-    local isPRValid=$(isPROpenAndUnmerged "$pr_num")
-    local approved=$(isApproved "$reviewDetails")
-    local isUpdateSuccessful=$(updatePR "$pr_num")
+    local isPRValid
+    isPRValid=$(isPROpenAndUnmerged "$pr_num")
+    local approved
+    approved=$(isApproved "$reviewDetails")
+    local isUpdateSuccessful
+    isUpdateSuccessful=$(updatePR "$pr_num")
 
     if [ "$isPRValid" == true ] && [ "$approved" == true ] && [ "$isUpdateSuccessful" == true ];
     then
@@ -152,9 +177,11 @@ function checkReadyToBuildOrMerge {
 function triggerCommentBuild {
     log "Function triggerBuild"
 
-    local pr_num=$1
+    local pr_num
+    pr_num=$1
 
-    local commentsApi=$(printf "$GIT_ISSUES_COMMENTS_API" "$pr_num")
+    local commentsApi
+    commentsApi=$(printf "$GIT_ISSUES_COMMENTS_API" "$pr_num")
 
     curl -s -X POST -u "$GIT_NAME":"$GIT_TOKEN" -H "Content-Type: application/json" "$commentsApi" -d ' 
     {
@@ -169,7 +196,9 @@ function mergePR {
 
     pr_num=$1
 
-    local mergeApi=$(printf "$GIT_PR_MERGE_API" "$pr_num")
-    local mergeStatus=$(curl -s -X PUT -u "$GIT_NAME":"$GIT_TOKEN" "$mergeApi" -d '{"merge_method": "squash"}')
+    local mergeApi
+    mergeApi=$(printf "$GIT_PR_MERGE_API" "$pr_num")
+    local mergeStatus
+    mergeStatus=$(curl -s -X PUT -u "$GIT_NAME":"$GIT_TOKEN" "$mergeApi" -d '{"merge_method": "squash"}')
     echo "$mergeStatus"
 }
