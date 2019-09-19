@@ -64,6 +64,7 @@ if [ "$event" == "pr-build-success" ]; then
 		mergeStatus=$(mergePR "$pr_num")
 		mergeSuccess=$(grep -o -i "$MERGE_SUCCESS_MESSAGE" <<< "$mergeStatus" | wc -l)
 
+		# shellcheck disable=SC2086
 		if [ $mergeSuccess -eq 1 ]; then 
             echo "Successfully merged $pr_num"
             exit 0

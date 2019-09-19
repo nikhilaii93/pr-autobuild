@@ -64,6 +64,7 @@ function getCall {
     prNum="$2"
 
     local getApi
+    # shellcheck disable=SC2059
     getApi=$(printf "$gitApi" "$prNum")
 
     local apiStatus

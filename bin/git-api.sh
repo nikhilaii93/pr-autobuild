@@ -74,8 +74,9 @@ function isApproved {
         loginName="${loginNames[$i]}"
 
         local loginCount
-        loginCount=$(login_get $loginName)
+        loginCount=$(login_get "$loginName")
         
+        # shellcheck disable=SC2086
         if [ $loginCount -eq 0 ]; then
 
             login_set "$loginName"
@@ -101,12 +102,11 @@ function isApproved {
 
     log "Debug: Approval count $approvalCount"
     
-    if [ "$changesRequested" == true ];
-    then
+    # shellcheck disable=SC2086
+    if [ "$changesRequested" == true ]; then
         log "Debug: Changes requested"
         echo false
-    elif [ $approvalCount -ge $DEFAULT_APPROVAL_COUNT ];
-    then
+    elif [ $approvalCount -ge $DEFAULT_APPROVAL_COUNT ]; then
         echo true
     else
         echo false
@@ -130,6 +130,7 @@ function updatePR {
     baseBranch=$(echo "$prDetails" | jq -r '.base.ref')
 
     local updateStatus
+    # shellcheck disable=SC2086
     updateStatus=$(curl -s -X POST -u "$GIT_NAME":"$GIT_TOKEN" -H "Content-Type: application/json" "$GIT_MERGE_API" -d ' 
     {
         "base": '\"$prBranch\"',
@@ -138,7 +139,8 @@ function updatePR {
 
     local conflictCount
     conflictCount=$(grep -o -i 'Merge Conflict' <<< "$updateStatus" | wc -l)
-
+    
+    # shellcheck disable=SC2086
     if [ $conflictCount -eq 0 ];
     then
         echo true
@@ -181,6 +183,7 @@ function triggerCommentBuild {
     pr_num=$1
 
     local commentsApi
+    # shellcheck disable=SC2059
     commentsApi=$(printf "$GIT_ISSUES_COMMENTS_API" "$pr_num")
 
     curl -s -X POST -u "$GIT_NAME":"$GIT_TOKEN" -H "Content-Type: application/json" "$commentsApi" -d ' 
@@ -197,6 +200,7 @@ function mergePR {
     pr_num=$1
 
     local mergeApi
+    # shellcheck disable=SC2059
     mergeApi=$(printf "$GIT_PR_MERGE_API" "$pr_num")
     local mergeStatus
     mergeStatus=$(curl -s -X PUT -u "$GIT_NAME":"$GIT_TOKEN" "$mergeApi" -d '{"merge_method": "squash"}')
