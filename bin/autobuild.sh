@@ -70,6 +70,8 @@ if [ "$event" == "pr-build-success" ]; then
             exit 0
         else
         	echo "Merge failed for $pr_num"
+        	echo "This means branch was rebased with master. Rebuilding..."
+        	triggerBuild "$pr_num"
             exit 1
         fi
 	fi
@@ -77,12 +79,7 @@ else
 	readyToBuild=$(checkReadyToBuildOrMerge "$pr_num")
 
 	if [ "$readyToBuild" == true ]; then
-		if [ "$COMMENT_BASED_BUILD" = true ]; then
-			triggerCommentBuild "$pr_num"
-		else
-			echo "Build Script option yet to be implemented!"
-			exit 1
-		fi
+		triggerBuild "$pr_num"
 	fi
 fi
 

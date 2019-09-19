@@ -194,6 +194,17 @@ function triggerCommentBuild {
     log "Build triggered for $pr_num"
 }
 
+function triggerBuild {
+    local pr_num
+    pr_num=$1
+    if [ "$COMMENT_BASED_BUILD" = true ]; then
+        triggerCommentBuild "$pr_num"
+    else
+        echo "Build Script option yet to be implemented!"
+        exit 1
+    fi
+}
+
 function mergePR {
     log "Function mergePR"
 
