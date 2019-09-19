@@ -27,8 +27,13 @@ elif [ "$action" == "submitted" ]; then
 		exit 0
 	fi
 else
-	echo "$action is not supported"
-	exit 0
+	event=$(jq --raw-output .event_type "$GITHUB_EVENT_PATH")
+	if [ "$event" == "pr-build-success" ]; then
+		pr_num=$(jq --raw-output .pr_num "$GITHUB_EVENT_PATH")
+	else 
+		echo "$action is not supported"
+		exit 0
+	fi	
 fi
 
 
@@ -42,13 +47,35 @@ if [[ ! -z "$PR_LABEL" ]]; then
 	fi
 fi
 
-readyToBuild=$(checkReadyToBuild $pr_num)
+if [ "$event" == "pr-build-success" ]; then
+	
+	readyToMerge=$(checkReadyToBuildOrMerge $pr_num)
 
-if [ "$readyToBuild" == true ]; then
-	if [ "$COMMENT_BASED_BUILD" = true ]; then
-		triggerCommentBuild "$pr_num"
-	else
-		echo "Build Script option yet to be implemented!"
-		exit 1
+	if [ "$readyToMerge" == true ]; then
+		mergeStatus=$(mergePR $pr_num)
+		mergeSuccess=$(grep -o -i "$MERGE_SUCCESS_MESSAGE" <<< "$mergeStatus" | wc -l)
+
+		if [ $mergeSuccess -eq 1 ]; then 
+            echo "Successfully merged $pr_num"
+            exit 0
+        else
+        	echo "Merge failed for $pr_num"
+            exit 1
+        fi
+	fi
+else 
+	readyToBuild=$(checkReadyToBuildOrMerge $pr_num)
+
+	if [ "$readyToBuild" == true ]; then
+		if [ "$COMMENT_BASED_BUILD" = true ]; then
+			triggerCommentBuild "$pr_num"
+		else
+			echo "Build Script option yet to be implemented!"
+			exit 1
+		fi
 	fi
 fi
+
+
+
+

@@ -21,6 +21,7 @@ MERGE_FAILED_STATUS='MERGE_FAILED'
 BUILD_FAILED_STATUS='BUILD_FAILED'
 NOT_READY_STATUS='NOT_READY'
 CONFLICT_STATUS='CONFLICT'
+MERGE_SUCCESS_MESSAGE='Pull Request successfully merged'
 
 
 
@@ -30,6 +31,7 @@ PR_NUM=()
 # Git APIs
 GIT_PR_API="https://api.github.com/repos/"$GITHUB_REPOSITORY"/pulls/%s"
 GIT_ISSUES_COMMENTS_API="https://api.github.com/repos/"$GITHUB_REPOSITORY"/issues/%s/comments"
+GIT_MERGE_API="https://api.github.com/repos/"$GITHUB_REPOSITORY"/merges"
 GIT_REVIEWS_API="https://api.github.com/repos/"$GITHUB_REPOSITORY"/pulls/%s/reviews"
 GIT_COMMENT_API="https://api.github.com/repos/"$GITHUB_REPOSITORY"/pulls/%s/comments"
 GIT_PR_MERGE_API="https://api.github.com/repos/"$GITHUB_REPOSITORY"/pulls/%s/merge?"

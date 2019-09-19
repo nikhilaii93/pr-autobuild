@@ -128,7 +128,7 @@ function updatePR {
     fi
 }
 
-function checkReadyToBuild {
+function checkReadyToBuildOrMerge {
     log "Function checkReadyToBuild"
 
     local pr_num=$1
@@ -162,4 +162,14 @@ function triggerCommentBuild {
     }'
 
     log "Build triggered for $pr_num"
+}
+
+function mergePR {
+    log "Function mergePR"
+
+    pr_num=$1
+
+    local mergeApi=$(printf "$GIT_PR_MERGE_API" "$pr_num")
+    local mergeStatus=$(curl -s -X PUT -u "$GIT_NAME":"$GIT_TOKEN" "$mergeApi" -d '{"merge_method": "squash"}')
+    echo "$mergeStatus"
 }
