@@ -55,7 +55,7 @@ jobs:
 	1. Optional: PR is tagged with a certain label **PR_LABEL_ENV**
 	1. Optional: Build is successful (eg. through Jenkins)
 1. This workflow gets triggered through a external event which is a POST call:
-  1. ```curl -s -X POST -u nikhilaii93:$TOKEN -H "Content-Type: application/json" -H "Accept: application/vnd.github.everest-preview+json" "https://api.github.com/repos/$GITHUB_REOSITORY/dispatches" -d '{"event_type": "pr-build-success $PR_NUM"}'```
+  1. `curl -s -X POST -u nikhilaii93:$TOKEN -H "Content-Type: application/json" -H "Accept: application/vnd.github.everest-preview+json" "https://api.github.com/repos/$GITHUB_REOSITORY/dispatches" -d '{"event_type": "pr-build-success $PR_NUM"}'`
   1. Replace **$TOKEN** with actual GITHUB access token
   1. Replace **$GITHUB_REPOSITORY** with owner/repo
   1. Replace **$PR_NUM** with actual PR number
