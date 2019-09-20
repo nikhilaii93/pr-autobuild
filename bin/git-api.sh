@@ -277,7 +277,7 @@ function deleteBranch {
         deleteApi=$(printf "$GIT_DELETE_API" "$PR_BRANCH")
         
         log "$deleteApi"
-        echo $(curl -s -X DELETE -u "$GIT_NAME":"$GIT_TOKEN" "$deleteApi")
+        curl -s -X DELETE -u "$GIT_NAME":"$GIT_TOKEN" "$deleteApi"
     else
         echo "PR $pr_num is not merged, aborting delete"
     fi

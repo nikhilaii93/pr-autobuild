@@ -53,8 +53,9 @@ function parse_env {
 function check_labels () {
     local match
 	match=false
-    local labels
-	labels="$1"
+    local labels=()
+    IFS=' '
+    read -ra labels <<< "$1"
 	for row in $(echo "${labels}" | jq -r '.[] | @base64'); do
     	_jq() {
      		echo "${row}" | base64 -d | jq -r "${1}"
