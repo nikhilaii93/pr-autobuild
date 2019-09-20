@@ -5,6 +5,8 @@
   <a href="https://github.com/nikhilaii93/pr-autobuild"><img alt="GitHub Actions status" src="https://github.com/nikhilaii93/pr-autobuild/workflows/Shell%20Check/badge.svg"></a>
 </p>
 
+[![made-with-bash](https://img.shields.io/badge/Made%20with-Bash-1f425f.svg)](https://www.gnu.org/software/bash/)
+
 ## Worflows supported ##
 ### PR Build Trigger ###
 1. Configure this workflow to trigger PR build if the PR satisfies criteria:
@@ -91,12 +93,6 @@ jobs:
           DELETE_BRANCH_ENV: true
 ```
 
-## Contributing
-
-If you have suggestions for how rubberneck could be improved, or want to report a bug, open an issue! We'd love all and any contributions.
-
-For more, check out the [Contributing Guide](CONTRIBUTING.md).
-
 ## License
 
-[ISC](LICENSE) © 2019 Nikhil Verma <nikhilverma.ajm@gmail.com>
+[ISC](http://opensource.org/licenses/ISC) © 2019 Nikhil Verma <nikhilverma.ajm@gmail.com>
