@@ -51,25 +51,32 @@ function parse_env {
 }
 
 function check_labels () {
-    local match
-	match=false
-    local labels=()
-    # shellcheck disable=SC2178
-    labels=$1
+    local labels
+    labels="$1"
     
-    # shellcheck disable=SC2128
-	for row in $(echo "${labels}" | jq -r '.[] | @base64'); do
-    	_jq() {
-     		echo "${row}" | base64 -d | jq -r "${1}"
-    	}
+    local labelCount
+    labelCount=$(grep -o -i "$PR_LABEL" <<< "$labels" | wc -l)
+	
+    # shellcheck disable=SC2086
+    if [ $labelCount -eq 0 ]; then
+        echo false
+    else
+        echo true
+    fi
 
-   		label_name=$(_jq '.name')
-   		if [ "$label_name" == "$PR_LABEL" ]; then
-   			match=true
-   			break
-   		fi
-	done
-	echo "$match"
+    # Below code is not working as expected in alpine, so using grep above.
+    # 
+    # for row in $(echo "${labels}" | jq -r '.[] | @base64'); do
+    # _jq() {
+    #     echo "${row}" | base64 -d | jq -r "${1}"
+    # }
+    # 
+    #     label_name=$(_jq '.name')
+    #     if [ "$label_name" == "$PR_LABEL" ]; then
+    #         match=true
+    #         break
+    #     fi
+    # done
 }
 
 function getCall {

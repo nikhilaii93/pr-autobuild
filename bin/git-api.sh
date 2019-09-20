@@ -150,8 +150,7 @@ function updatePR {
     conflictCount=$(grep -o -i 'Merge Conflict' <<< "$updateStatus" | wc -l)
     
     # shellcheck disable=SC2086
-    if [ $conflictCount -eq 0 ];
-    then
+    if [ $conflictCount -eq 0 ]; then
         echo true
     else
         log "$CONFLICT_STATUS $pr_num"
@@ -175,8 +174,7 @@ function checkReadyToBuildOrMerge {
     local isUpdateSuccessful
     isUpdateSuccessful=$(updatePR "$pr_num")
 
-    if [ "$isPRValid" == true ] && [ "$approved" == true ] && [ "$isUpdateSuccessful" == true ];
-    then
+    if [ "$isPRValid" == true ] && [ "$approved" == true ] && [ "$isUpdateSuccessful" == true ]; then
         log "PR $pr_num ready to build"
         echo true
     else
@@ -271,8 +269,7 @@ function deleteBranch {
 
     log "PR merged $isPRMerged $PR_BRANCH"
 
-    if [ "$isPRMerged" == true ];
-    then
+    if [ "$isPRMerged" == true ]; then
         local deleteApi
         # shellcheck disable=SC2059
         deleteApi=$(printf "$GIT_DELETE_API" "$PR_BRANCH")
