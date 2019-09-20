@@ -12,7 +12,7 @@
 	1. Mandatory: There is no review iwth **changes_requested** status
 	1. Optional: PR is tagged with a certain label **PR_LABEL_ENV**
 1. The workflow gets triggered in the following scenarios:
-	1. When PR review is submitted
+  1. When PR review is submitted
 	1. When PR is labeled
 	1. Note: build will only be triggered if PR satisfies the above criteria and is independent of the event that triggered the workflow in the first place
 1. Currently, build through Github Actions is not supported
@@ -54,13 +54,12 @@ jobs:
 	1. Mandatory: There is no review iwth **changes_requested** status
 	1. Optional: PR is tagged with a certain label **PR_LABEL_ENV**
 	1. Optional: Build is successful (eg. through Jenkins)
-1. This workflow gets triggered through a external event which is a POST call:
+1. This workflow gets triggered through a external event which is a POST call: ```
+curl -s -X POST -u nikhilaii93:$TOKEN -H "Content-Type: application/json" -H "Accept: application/vnd.github.everest-preview+json" "https://api.github.com/repos/$GITHUB_REOSITORY/dispatches" -d '{"event_type": "pr-build-success $PR_NUM"}'
+```
   1. Replace **$TOKEN** with actual GITHUB access token
   1. Replace **$GITHUB_REPOSITORY** with owner/repo
   1. Replace **$PR_NUM** with actual PR number
-```
-curl -s -X POST -u nikhilaii93:$TOKEN -H "Content-Type: application/json" -H "Accept: application/vnd.github.everest-preview+json" "https://api.github.com/repos/$GITHUB_REOSITORY/dispatches" -d '{"event_type": "pr-build-success $PR_NUM"}'
-```
 1. The above event can be triggered through Jenkins on build success
 1. PR Name in GitHub pull request builder plugin can be obtained through **ghprbPullId** environment variable
 1. The PR is merge method used is based on the following logic:
