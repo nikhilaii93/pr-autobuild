@@ -54,7 +54,8 @@ function check_labels () {
     local match
 	match=false
     local labels=()
-    labels=( "$1" )
+    # shellcheck disable=SC2178
+    labels=$1
     
 	for row in $(echo "${labels[@]}" | jq -r '.[] | @base64'); do
     	_jq() {
