@@ -16,6 +16,8 @@ function updatePRdetails {
     export BASE_BRANCH
     LABELS=$(echo "$prDetails" | jq -r '.labels')
     export LABELS
+    echo "$prDetails"
+    echo "$LABELS"
 }
 
 function getMergeStatus {
