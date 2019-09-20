@@ -54,10 +54,11 @@ function check_labels () {
     local match
 	match=false
     local labels=()
+    # shellcheck disable=SC2178
+    labels=$1
     
-    labels=( "$1" )
-    
-	for row in $(echo "${labels[@]}" | jq -r '.[] | @base64'); do
+    # shellcheck disable=SC2128
+	for row in $(echo "${labels}" | jq -r '.[] | @base64'); do
     	_jq() {
      		echo "${row}" | base64 -d | jq -r "${1}"
     	}
