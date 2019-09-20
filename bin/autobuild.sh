@@ -40,6 +40,8 @@ elif [ "$action" == "submitted" ]; then
 		exit 0
 	fi
 elif [[ "$action" == "pr-build-success"* ]]; then
+	event="pr-build-success"
+	
 	IFS=' '
 	read -ra actionParts <<< "$action"
 	
