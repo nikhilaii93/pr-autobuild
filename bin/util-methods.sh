@@ -40,6 +40,10 @@ function parse_env {
 	if [[ -n "$PR_LABEL_ENV" ]]; then
 		export PR_LABEL="$PR_LABEL_ENV"
 	fi
+
+    if [[ -n "$DEFAULT_MERGE_ENV" ]]; then
+        export DEFAULT_MERGE="$DEFAULT_MERGE_ENV"
+    fi
 }
 
 function check_labels () {

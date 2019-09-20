@@ -18,7 +18,11 @@ DIR=/usr/bin
 # shellcheck source=/usr/bin
 . "$DIR"/git-api.sh
 
+# Parse Environment Variables
 parse_env
+
+# Update PR details in Global Variables
+updatePRdetails
 
 echo "$GITHUB_EVENT_PATH"
 cat "$GITHUB_EVENT_PATH"
@@ -35,14 +39,14 @@ elif [ "$action" == "submitted" ]; then
 		echo "Nothing to do for review $review_state"	
 		exit 0
 	fi
-else
-	event=$(jq --raw-output .event_type "$GITHUB_EVENT_PATH")
-	if [ "$event" == "pr-build-success" ]; then
-		pr_num=$(jq --raw-output .pr_num "$GITHUB_EVENT_PATH")
-	else 
-		echo "$action is not supported"
-		exit 0
-	fi	
+elif [[ "$action" == "pr-build-success"* ]]; then
+	IFS=' '
+	read -ra actionParts <<< "$action"
+	
+	pr_num="${actionParts[1]}"
+else 
+	echo "$action is not supported"
+	exit 0
 fi
 
 

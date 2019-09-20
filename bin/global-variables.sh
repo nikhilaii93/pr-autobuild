@@ -4,11 +4,16 @@ set -Eexo pipefail
 
 # Constants
 # Approval count is integer
+
+export PR_BRANCH=""
+export BASE_BRANCH=""
+
 export DEFAULT_APPROVAL_COUNT=2
 export PR_APPROVED='APPROVED'
 export PR_LABEL=""
 export COMMENT_BASED_BUILD=true
 export BUILD_COMMENT="OK to test"
+export DEFAULT_MERGE=merge
 
 # DO NOT CHANGE THIS
 export BUILD_UPDATE_TIME=10

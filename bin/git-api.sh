@@ -2,6 +2,18 @@
 
 set -Eexo pipefail
 
+function updatePRdetails {
+    log "Function updatePRdetails"
+
+    local pr_num
+    pr_num=$1
+
+    local prDetails
+    prDetails=$(getCall "$GIT_PR_API" "$pr_num")
+    PR_BRANCH=$(echo "$prDetails" | jq -r '.head.ref')
+    BASE_BRANCH=$(echo "$prDetails" | jq -r '.base.ref')
+}
+
 function getMergeStatus {
     log "Function getMergeStatus"
 
@@ -122,19 +134,12 @@ function updatePR {
     local pr_num
     pr_num=$1
 
-    local prDetails
-    prDetails=$(getCall "$GIT_PR_API" "$pr_num")
-    local prBranch
-    prBranch=$(echo "$prDetails" | jq -r '.head.ref')
-    local baseBranch
-    baseBranch=$(echo "$prDetails" | jq -r '.base.ref')
-
     local updateStatus
     # shellcheck disable=SC2086
     updateStatus=$(curl -s -X POST -u "$GIT_NAME":"$GIT_TOKEN" -H "Content-Type: application/json" "$GIT_MERGE_API" -d ' 
     {
-        "base": '\"$prBranch\"',
-        "head": '\"$baseBranch\"'
+        "base": '\"$PR_BRANCH\"',
+        "head": '\"$BASE_BRANCH\"'
     }')
 
     local conflictCount
@@ -214,6 +219,16 @@ function mergePR {
     # shellcheck disable=SC2059
     mergeApi=$(printf "$GIT_PR_MERGE_API" "$pr_num")
     local mergeStatus
-    mergeStatus=$(curl -s -X PUT -u "$GIT_NAME":"$GIT_TOKEN" "$mergeApi" -d '{"merge_method": "squash"}')
+
+    # Branches to release aren't squashed as it will ruin the commit history.
+    if [ "$PR_BRANCH" == "release" ] || [ "$BASE_BRANCH" == "release" ] || [ "$DEFAULT_MERGE" == "merge" ]; then
+        log "Doing default merge for prBranch: $PR_BRANCH & baseBranch: $BASE_BRANCH"
+        mergeStatus=$(curl -s -X PUT -u "$GIT_NAME":"$GIT_TOKEN" "$mergeApi")
+    else
+        log "Doing squash merge for prBranch: $PR_BRANCH & baseBranch: $BASE_BRANCH"
+        mergeStatus=$(curl -s -X PUT -u "$GIT_NAME":"$GIT_TOKEN" "$mergeApi" -d '{"merge_method": "squash"}')
+    fi    
+
+    
     echo "$mergeStatus"
 }
