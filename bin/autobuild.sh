@@ -21,8 +21,7 @@ DIR=/usr/bin
 # Parse Environment Variables
 parse_env
 
-# Update PR details in Global Variables
-updatePRdetails
+
 
 echo "$GITHUB_EVENT_PATH"
 cat "$GITHUB_EVENT_PATH"
@@ -50,6 +49,10 @@ else
 	echo "$action is not supported"
 	exit 0
 fi
+
+
+# Update PR details in Global Variables
+updatePRdetails "$pr_num"
 
 if [[ -n "$PR_LABEL" ]]; then
 	match=$(check_labels "$LABELS")
@@ -85,7 +88,6 @@ else
 		triggerBuild "$pr_num"
 	fi
 fi
-
 
 
 

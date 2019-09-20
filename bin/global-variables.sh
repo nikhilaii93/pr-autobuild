@@ -6,7 +6,6 @@ set -Eexo pipefail
 # Setup variables
 export PR_BRANCH=""
 export BASE_BRANCH=""
-export LABELS=()
 
 # Constants
 # Approval count is integer
