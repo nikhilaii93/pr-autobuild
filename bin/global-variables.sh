@@ -2,12 +2,14 @@
 
 set -Eexo pipefail
 
-# Constants
-# Approval count is integer
 
+# Setup variables
 export PR_BRANCH=""
 export BASE_BRANCH=""
+export LABELS=()
 
+# Constants
+# Approval count is integer
 export DEFAULT_APPROVAL_COUNT=2
 export PR_APPROVED='APPROVED'
 export PR_LABEL=""

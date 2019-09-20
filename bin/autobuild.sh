@@ -41,7 +41,7 @@ elif [ "$action" == "submitted" ]; then
 	fi
 elif [[ "$action" == "pr-build-success"* ]]; then
 	event="pr-build-success"
-	
+
 	IFS=' '
 	read -ra actionParts <<< "$action"
 	
@@ -51,11 +51,8 @@ else
 	exit 0
 fi
 
-
-labels=$(jq --raw-output .pull_request.labels "$GITHUB_EVENT_PATH")
-
 if [[ -n "$PR_LABEL" ]]; then
-	match=$(check_labels "$labels")
+	match=$(check_labels "$LABELS")
 	if [ "$match" == false ]; then
 		echo "$PR_LABEL not found on PR: $pr_num"
 		exit 0
