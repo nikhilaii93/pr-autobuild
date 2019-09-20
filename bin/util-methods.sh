@@ -44,6 +44,10 @@ function parse_env {
     if [[ -n "$DEFAULT_MERGE_ENV" ]]; then
         export DEFAULT_MERGE="$DEFAULT_MERGE_ENV"
     fi
+
+    if [[ -n "$DELETE_BRANCH_ENV" ]]; then
+        export DELETE_BRANCH="$DELETE_BRANCH_ENV"
+    fi
 }
 
 function check_labels () {

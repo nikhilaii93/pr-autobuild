@@ -15,6 +15,7 @@ export PR_LABEL=""
 export COMMENT_BASED_BUILD=true
 export BUILD_COMMENT="OK to test"
 export DEFAULT_MERGE=merge
+export DELETE_BRANCH=false
 
 # DO NOT CHANGE THIS
 export BUILD_UPDATE_TIME=10
@@ -28,6 +29,7 @@ export BUILD_FAILED_STATUS='BUILD_FAILED'
 export NOT_READY_STATUS='NOT_READY'
 export CONFLICT_STATUS='CONFLICT'
 export MERGE_SUCCESS_MESSAGE='Pull Request successfully merged'
+export DELETE_FAILURE_MESSAGE='aborting delete'
 
 # Git APIs
 export GIT_PR_API="https://api.github.com/repos/$GITHUB_REPOSITORY/pulls/%s"
@@ -36,3 +38,4 @@ export GIT_MERGE_API="https://api.github.com/repos/$GITHUB_REPOSITORY/merges"
 export GIT_REVIEWS_API="https://api.github.com/repos/$GITHUB_REPOSITORY/pulls/%s/reviews"
 export GIT_COMMENT_API="https://api.github.com/repos/$GITHUB_REPOSITORY/pulls/%s/comments"
 export GIT_PR_MERGE_API="https://api.github.com/repos/$GITHUB_REPOSITORY/pulls/%s/merge?"
+export GIT_DELETE_API="https://api.github.com/repos/$GITHUB_REPOSITORY/git/refs/heads/%s"

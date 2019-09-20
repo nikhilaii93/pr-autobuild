@@ -16,8 +16,6 @@ function updatePRdetails {
     export BASE_BRANCH
     LABELS=$(echo "$prDetails" | jq -r '.labels')
     export LABELS
-    echo "$prDetails"
-    echo "$LABELS"
 }
 
 function getMergeStatus {
@@ -237,4 +235,50 @@ function mergePR {
 
     
     echo "$mergeStatus"
+}
+
+function isPRCloseAndMerged {
+    log "Function isPRCloseAndMerged"
+
+    local pr_num
+    pr_num=$1
+
+    local prDetails
+    prDetails=$(getCall "$GIT_PR_API" "$pr_num")
+    local prStatus
+    prStatus=$(echo "$prDetails" | jq -r '.state')
+    local mergeStatus
+    mergeStatus=$(getMergeStatus "$pr_num")
+
+    log "Debug: PR status $prStatus of $pr_num"
+    log "Debug: Merge status $mergeStatus of $pr_num"
+
+    if [ "$prStatus" == 'closed' ] && [ "$mergeStatus" == "$MERGED_STATUS" ]; then 
+        echo true
+    else 
+        echo false
+    fi
+}
+
+function deleteBranch {
+    log "Function deleteBranch"
+
+    local pr_num
+    pr_num=$1
+
+    local isPRMerged
+    isPRMerged=$(isPRCloseAndMerged "$pr_num")
+
+    log "PR merged $isPRMerged $PR_BRANCH"
+
+    if [ "$isPRMerged" == true ];
+    then
+        local deleteApi
+        deleteApi=$(printf "$GIT_DELETE_API" "$PR_BRANCH")
+        
+        log "$deleteApi"
+        echo $(curl -s -X DELETE -u "$GIT_NAME":"$GIT_TOKEN" "$deleteApi")
+    else
+        echo "PR $pr_num is not merged, aborting delete"
+    fi
 }

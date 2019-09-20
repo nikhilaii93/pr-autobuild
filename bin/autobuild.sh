@@ -73,6 +73,14 @@ if [ "$event" == "pr-build-success" ]; then
 		# shellcheck disable=SC2086
 		if [ $mergeSuccess -eq 1 ]; then 
             echo "Successfully merged $pr_num"
+
+            if [ "$DELETE_BRANCH" == true ]; then
+            	deleteStatus=$(deleteBranch $pr_num)
+            	deleteFailure=$(grep -o -i "$DELETE_FAILURE_MESSAGE" <<< "$deleteStatus" | wc -l)
+
+            	log "Delete status $deleteStatus"
+            fi
+
             exit 0
         else
         	echo "Merge failed for $pr_num"
