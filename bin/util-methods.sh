@@ -54,8 +54,8 @@ function check_labels () {
     local match
 	match=false
     local labels=()
-    IFS=' '
-    read -ra labels <<< "$1"
+    labels=$1
+    
 	for row in $(echo "${labels}" | jq -r '.[] | @base64'); do
     	_jq() {
      		echo "${row}" | base64 -d | jq -r "${1}"
@@ -73,6 +73,7 @@ function check_labels () {
 function getCall {
     gitApi="$1"
     prNum="$2"
+
 
     local getApi
     # shellcheck disable=SC2059

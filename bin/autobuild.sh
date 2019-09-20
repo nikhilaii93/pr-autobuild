@@ -21,8 +21,6 @@ DIR=/usr/bin
 # Parse Environment Variables
 parse_env
 
-
-
 echo "$GITHUB_EVENT_PATH"
 cat "$GITHUB_EVENT_PATH"
 
@@ -76,7 +74,6 @@ if [ "$event" == "pr-build-success" ]; then
 
             if [ "$DELETE_BRANCH" == true ]; then
             	deleteStatus=$(deleteBranch $pr_num)
-            	deleteFailure=$(grep -o -i "$DELETE_FAILURE_MESSAGE" <<< "$deleteStatus" | wc -l)
 
             	log "Delete status $deleteStatus"
             fi

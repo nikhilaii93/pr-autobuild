@@ -274,6 +274,7 @@ function deleteBranch {
     if [ "$isPRMerged" == true ];
     then
         local deleteApi
+        # shellcheck disable=SC2059
         deleteApi=$(printf "$GIT_DELETE_API" "$PR_BRANCH")
         
         log "$deleteApi"
