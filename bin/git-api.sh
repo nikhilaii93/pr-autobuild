@@ -11,8 +11,11 @@ function updatePRdetails {
     local prDetails
     prDetails=$(getCall "$GIT_PR_API" "$pr_num")
     PR_BRANCH=$(echo "$prDetails" | jq -r '.head.ref')
+    export PR_BRANCH
     BASE_BRANCH=$(echo "$prDetails" | jq -r '.base.ref')
+    export BASE_BRANCH
     LABELS=$(echo "$prDetails" | jq -r '.labels')
+    export LABELS
 }
 
 function getMergeStatus {
