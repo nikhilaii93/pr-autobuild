@@ -140,7 +140,7 @@ function updatePR {
 
     local updateStatus
     # shellcheck disable=SC2086
-    updateStatus=$(curl -s -X POST -u "$GIT_NAME":"$GIT_TOKEN" -H "Content-Type: application/json" "$GIT_MERGE_API" -d ' 
+    updateStatus=$(curl -s -X POST -u "$GIT_NAME":"$GIT_TOKEN" -H "Content-Type: application/json" -H "Accept: application/vnd.github.v3+json" "$GIT_MERGE_API" -d '
     {
         "base": '\"$PR_BRANCH\"',
         "head": '\"$BASE_BRANCH\"'
@@ -213,7 +213,7 @@ function triggerCommentBuild {
     # shellcheck disable=SC2059
     commentsApi=$(printf "$GIT_ISSUES_COMMENTS_API" "$pr_num")
 
-    curl -s -X POST -u "$GIT_NAME":"$GIT_TOKEN" -H "Content-Type: application/json" "$commentsApi" -d ' 
+    curl -s -X POST -u "$GIT_NAME":"$GIT_TOKEN" -H "Content-Type: application/json" -H "Accept: application/vnd.github.v3+json" "$commentsApi" -d '
     {
         "body": "OK to test"
     }'
@@ -245,10 +245,10 @@ function mergePR {
     # Branches to release aren't squashed as it will ruin the commit history.
     if [ "$PR_BRANCH" == "release" ] || [ "$BASE_BRANCH" == "release" ] || [ "$DEFAULT_MERGE" == "merge" ]; then
         log "Doing default merge for prBranch: $PR_BRANCH & baseBranch: $BASE_BRANCH"
-        mergeStatus=$(curl -s -X PUT -u "$GIT_NAME":"$GIT_TOKEN" "$mergeApi")
+        mergeStatus=$(curl -s -X PUT -u "$GIT_NAME":"$GIT_TOKEN" -H "Accept: application/vnd.github.v3+json" "$mergeApi")
     else
         log "Doing squash merge for prBranch: $PR_BRANCH & baseBranch: $BASE_BRANCH"
-        mergeStatus=$(curl -s -X PUT -u "$GIT_NAME":"$GIT_TOKEN" "$mergeApi" -d '{"merge_method": "squash"}')
+        mergeStatus=$(curl -s -X PUT -u "$GIT_NAME":"$GIT_TOKEN" "$mergeApi" -H "Accept: application/vnd.github.v3+json" -d '{"merge_method": "squash"}')
     fi    
 
     

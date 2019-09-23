@@ -89,7 +89,7 @@ function getCall {
     getApi=$(printf "$gitApi" "$prNum")
 
     local apiStatus
-    apiStatus=$(curl -s -u "$GIT_NAME":"$GIT_TOKEN" "$getApi")
+    apiStatus=$(curl -s -u "$GIT_NAME":"$GIT_TOKEN" -H "Accept: application/vnd.github.v3+json" "$getApi")
 
     echo "$apiStatus"
 }
