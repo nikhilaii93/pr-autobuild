@@ -83,7 +83,7 @@ if [ "$event" == "pr-build-success" ]; then
         	echo "Merge failed for $pr_num"
         	echo "This means branch was rebased with master. Rebuilding..."
         	triggerBuild "$pr_num"
-            exit 1
+            exit 0
         fi
 	fi
 else 
@@ -93,6 +93,3 @@ else
 		triggerBuild "$pr_num"
 	fi
 fi
-
-
-

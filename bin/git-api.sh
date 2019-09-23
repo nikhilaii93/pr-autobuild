@@ -173,24 +173,25 @@ function checkReadyToBuildOrMerge {
      while true; do
         getReviewApiWithPage="$GIT_REVIEWS_API$page_num"
 
-        local reviewDetailsTemp=()
+        local reviewDetailsTemp
         reviewDetailsTemp=$(getCall "$getReviewApiWithPage" "$pr_num")
 
         # Check for a unique string in the payload
         current_size=$(grep -o -i 'pull_request_url' <<< "$reviewDetailsTemp" | wc -l)
         
+        # shellcheck disable=SC2086
         if [ $current_size -eq 0 ]; then
             break;
         fi
-        
-        reviewDetails+=${reviewDetailsTemp[@]}
+        # shellcheck disable=SC2179
+        reviewDetails+=${reviewDetailsTemp[*]}
         page_num=$((page_num+1))
     done
 
     local isPRValid
     isPRValid=$(isPROpenAndUnmerged "$pr_num")
     local approved
-    approved=$(isApproved "$reviewDetails")
+    approved=$(isApproved "${reviewDetails[@]}")
     local isUpdateSuccessful
     isUpdateSuccessful=$(updatePR "$pr_num")
 
