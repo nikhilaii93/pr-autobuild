@@ -36,7 +36,8 @@ export DELETE_FAILURE_MESSAGE='aborting delete'
 export GIT_PR_API="https://api.github.com/repos/$GITHUB_REPOSITORY/pulls/%s"
 export GIT_ISSUES_COMMENTS_API="https://api.github.com/repos/$GITHUB_REPOSITORY/issues/%s/comments"
 export GIT_MERGE_API="https://api.github.com/repos/$GITHUB_REPOSITORY/merges"
-export GIT_REVIEWS_API="https://api.github.com/repos/$GITHUB_REPOSITORY/pulls/%s/reviews"
+# Note extra page param at the end
+export GIT_REVIEWS_API="https://api.github.com/repos/$GITHUB_REPOSITORY/pulls/%s/reviews?page="
 export GIT_COMMENT_API="https://api.github.com/repos/$GITHUB_REPOSITORY/pulls/%s/comments"
 export GIT_PR_MERGE_API="https://api.github.com/repos/$GITHUB_REPOSITORY/pulls/%s/merge?"
 export GIT_DELETE_API="https://api.github.com/repos/$GITHUB_REPOSITORY/git/refs/heads/%s"

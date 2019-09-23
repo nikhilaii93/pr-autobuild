@@ -164,8 +164,28 @@ function checkReadyToBuildOrMerge {
     local pr_num
     pr_num=$1
 
-    local reviewDetails
-    reviewDetails=$(getCall "$GIT_REVIEWS_API" "$pr_num")
+
+    local page_num
+    page_num=1
+    local reviewDetails=()
+
+    # Loop because in a page only 30 requests are returned
+     while true; do
+        getReviewApiWithPage="$GIT_REVIEWS_API$page_num"
+
+        local reviewDetailsTemp=()
+        reviewDetailsTemp=$(getCall "$getReviewApiWithPage" "$pr_num")
+
+        # Check for a unique string in the payload
+        current_size=$(grep -o -i 'pull_request_url' <<< "$reviewDetailsTemp" | wc -l)
+        
+        if [ $current_size -eq 0 ]; then
+            break;
+        fi
+        
+        reviewDetails+=${reviewDetailsTemp[@]}
+        page_num=$((page_num+1))
+    done
 
     local isPRValid
     isPRValid=$(isPROpenAndUnmerged "$pr_num")
