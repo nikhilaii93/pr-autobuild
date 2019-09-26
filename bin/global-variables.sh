@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -Eexo pipefail
+set -xo pipefail
 
 
 # Setup variables

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -Eexo pipefail
+set -xo pipefail
 
 function updatePRdetails {
     log "Function updatePRdetails"
