@@ -19,7 +19,7 @@ export DEFAULT_MERGE=merge
 export DELETE_BRANCH=false
 
 # DO NOT CHANGE THIS
-export BUILD_UPDATE_TIME=10
+export BUILD_UPDATE_TIME=15
 
 # PR Status
 export MERGED_STATUS='MERGED'

@@ -80,6 +80,8 @@ if [ "$event" == "pr-build-success" ]; then
 
             exit 0
         else
+        	# TODO: only trigger build in case of update with master
+        	# Check mergeability separately
         	echo "Merge failed for $pr_num"
         	echo "This means branch was rebased with master. Rebuilding..."
         	triggerBuild "$pr_num"
