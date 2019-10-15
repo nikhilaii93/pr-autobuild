@@ -18,7 +18,7 @@ export BUILD_COMMENT="OK to test"
 export DEFAULT_MERGE=merge
 export DELETE_BRANCH=false
 
-# DO NOT CHANGE THIS
+# DO NOT REDUCE THIS
 export BUILD_UPDATE_TIME=15
 
 # PR Status
