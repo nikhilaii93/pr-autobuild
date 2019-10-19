@@ -30,7 +30,10 @@ export BUILD_FAILED_STATUS='BUILD_FAILED'
 export NOT_READY_STATUS='NOT_READY'
 export CONFLICT_STATUS='CONFLICT'
 export MERGE_SUCCESS_MESSAGE='Pull Request successfully merged'
+export NOT_MERGEABLE_STATUS='Pull Request is not mergeable'
 export DELETE_FAILURE_MESSAGE='aborting delete'
+export UPDATED_STATUS='UPDATED'
+export ALREADY_UPDATED_STATUS='ALREADY_UPDATED'
 
 # Git APIs
 export GIT_PR_API="https://api.github.com/repos/$GITHUB_REPOSITORY/pulls/%s"

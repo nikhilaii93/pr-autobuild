@@ -103,12 +103,10 @@ function isApproved {
             
             log "Debug: Latest state $latestState for $loginName"
 
-            if [ "$latestState" == "$PR_CHANGES_REQUESTED" ];
-            then 
+            if [ "$latestState" == "$PR_CHANGES_REQUESTED" ]; then 
                 changesRequested=true
                 break
-            elif [ "$latestState" == "$PR_APPROVED" ]; 
-            then
+            elif [ "$latestState" == "$PR_APPROVED" ]; then
                 approvalCount=$((approvalCount+1))
             fi
         fi
@@ -148,13 +146,19 @@ function updatePR {
 
     local conflictCount
     conflictCount=$(grep -o -i 'Merge Conflict' <<< "$updateStatus" | wc -l)
+    local commitCount
+    commitCount=$(grep -o -i 'commit' <<< "$updateStatus" | wc -l)
     
     # shellcheck disable=SC2086
     if [ $conflictCount -eq 0 ]; then
-        echo true
+        # shellcheck disable=SC2086
+        if [ $commitCount -eq 0 ]; then
+            echo "$ALREADY_UPDATED_STATUS"
+        else
+            echo "$UPDATED_STATUS"
+        fi
     else
-        log "$CONFLICT_STATUS $pr_num"
-        echo false
+        echo "$CONFLICT_STATUS"
     fi
 }
 
@@ -193,14 +197,14 @@ function checkReadyToBuildOrMerge {
     local approved
     approved=$(isApproved "${reviewDetails[@]}")
     local isUpdateSuccessful
-    isUpdateSuccessful=$(updatePR "$pr_num")
+    currentUpdateStatus=$(updatePR "$pr_num")
 
-    if [ "$isPRValid" == true ] && [ "$approved" == true ] && [ "$isUpdateSuccessful" == true ]; then
-        log "PR $pr_num ready to build"
-        echo true
+    if [ "$isPRValid" == true ] && [ "$approved" == true ]; then
+        log "PR $pr_num ready to build/merge"
+        echo "$currentUpdateStatus"
     else
-        log "PR $pr_num not ready to build"
-        echo false
+        log "PR $pr_num not ready to build/merge"
+        echo "$NOT_READY_STATUS"
     fi
 }
 

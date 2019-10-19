@@ -70,7 +70,7 @@ if [ "$event" == "pr-build-success" ]; then
 
 		# shellcheck disable=SC2086
 		if [ $mergeSuccess -eq 1 ]; then 
-            echo "Successfully merged $pr_num"
+        	echo "Successfully merged $pr_num"
 
             if [ "$DELETE_BRANCH" == true ]; then
             	deleteStatus=$(deleteBranch $pr_num)
@@ -91,7 +91,41 @@ if [ "$event" == "pr-build-success" ]; then
 else 
 	readyToBuild=$(checkReadyToBuildOrMerge "$pr_num")
 
-	if [ "$readyToBuild" == true ]; then
+	if [ "$readyToBuild" == "$NOT_READY_STATUS" ]; then
+		echo "PR not valid or approved: $pr_num"
+
+		exit 0
+	elif [ "$readyToBuild" == "$UPDATED_STATUS" ]; then
 		triggerBuild "$pr_num"
+
+		exit 0
+	elif [ "$readyToBuild" == "$ALREADY_UPDATED_STATUS" ]; then
+		# try merging
+		mergeStatus=$(mergePR "$pr_num")
+		mergeSuccess=$(grep -o -i "$MERGE_SUCCESS_MESSAGE" <<< "$mergeStatus" | wc -l)
+
+		# shellcheck disable=SC2086
+		if [ $mergeSuccess -eq 1 ]; then 
+            echo "Successfully merged $pr_num"
+
+            if [ "$DELETE_BRANCH" == true ]; then
+            	deleteStatus=$(deleteBranch $pr_num)
+
+            	log "Delete status $deleteStatus"
+            fi
+
+            exit 0
+        else
+        	triggerBuild "$pr_num"
+
+            exit 0
+        fi
+	elif [ "$readyToBuild" == "$CONFLICT_STATUS" ]; then
+		echo "Conflict in PR: $pr_num"
+
+		exit 0
+	else
+		echo "Unknown status: $readyToBuild"
+		exit 1
 	fi
 fi
