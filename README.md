@@ -11,8 +11,9 @@
 ### PR Build Trigger ###
 1. Configure this workflow to trigger PR build if the PR satisfies criteria:
 	1. Mandatory: Approval count is greater than equal to **DEFAULT_APPROVAL_COUNT_ENV** variable
-	1. Mandatory: There is no review iwth **changes_requested** status
+	1. Mandatory: There is no review with **changes_requested** status
 	1. Optional: PR is tagged with a certain label **PR_LABEL_ENV**
+  1. Optional: List of codeowners (same as in CODEOWNER file in .github) **CODE_OWNERS_ENV**, build will only be triggered if there are no pending CODEOWNERS review on the PR
 1. The workflow gets triggered in the following scenarios:
   1. When PR review is submitted
 	1. When PR is labeled
@@ -47,6 +48,7 @@ jobs:
           DEFAULT_APPROVAL_COUNT_ENV: 1
           BUILD_COMMENT_ENV: "OK to test"
           PR_LABEL_ENV: RELEASE_TEST
+          CODEOWNERS: abc@example.com,defteam@example.com
 ```
 
 ### PR Merge & Delete branch ###
@@ -55,9 +57,9 @@ jobs:
 	1. Mandatory: Approval count is greater than equal to **DEFAULT_APPROVAL_COUNT_ENV** variable
 	1. Mandatory: There is no review iwth **changes_requested** status
 	1. Optional: PR is tagged with a certain label **PR_LABEL_ENV**
-	1. Optional: Build is successful (eg. through Jenkins)
-1. This workflow gets triggered through a external event which is a POST call:
-  1. `curl -s -X POST -u nikhilaii93:$TOKEN -H "Content-Type: application/json" -H "Accept: application/vnd.github.everest-preview+json" "https://api.github.com/repos/$GITHUB_REOSITORY/dispatches" -d '{"event_type": "pr-build-success $PR_NUM"}'`
+  1. Optional: List of codeowners (same as in CODEOWNER file in .github) **CODE_OWNERS_ENV**, build will only be triggered if there are no pending CODEOWNERS review on the PR
+1. Optional: Build successful event(eg. through Jenkins)
+  1. This workflow gets triggered through a external event which is a POST call: `curl -s -X POST -u nikhilaii93:$TOKEN -H "Content-Type: application/json" -H "Accept: application/vnd.github.everest-preview+json" "https://api.github.com/repos/$GITHUB_REOSITORY/dispatches" -d '{"event_type": "pr-build-success $PR_NUM"}'`
   1. Replace **$TOKEN** with actual GITHUB access token
   1. Replace **$GITHUB_REPOSITORY** with owner/repo
   1. Replace **$PR_NUM** with actual PR number
