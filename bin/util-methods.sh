@@ -48,6 +48,11 @@ function parse_env {
     if [[ -n "$DELETE_BRANCH_ENV" ]]; then
         export DELETE_BRANCH="$DELETE_BRANCH_ENV"
     fi
+
+    if [[ -n "$CODE_OWNERS_ENV" ]]; then
+        IFS=',' read -r -a CODE_OWNERS <<< "$CODE_OWNERS_ENV"
+        export CODE_OWNERS
+    fi
 }
 
 function check_labels () {

@@ -7,6 +7,7 @@ set -xo pipefail
 export PR_BRANCH=""
 export BASE_BRANCH=""
 export LABELS=()
+export CODE_OWNERS=()
 
 # Constants
 # Approval count is integer
@@ -41,6 +42,7 @@ export GIT_ISSUES_COMMENTS_API="https://api.github.com/repos/$GITHUB_REPOSITORY/
 export GIT_MERGE_API="https://api.github.com/repos/$GITHUB_REPOSITORY/merges"
 # Note extra page param at the end
 export GIT_REVIEWS_API="https://api.github.com/repos/$GITHUB_REPOSITORY/pulls/%s/reviews?page="
+export GIT_PENDING_REVIEWS_API="https://api.github.com/repos/$GITHUB_REPOSITORY/pulls/%s/requested_reviewers"
 export GIT_COMMENT_API="https://api.github.com/repos/$GITHUB_REPOSITORY/pulls/%s/comments"
 export GIT_PR_MERGE_API="https://api.github.com/repos/$GITHUB_REPOSITORY/pulls/%s/merge"
 export GIT_DELETE_API="https://api.github.com/repos/$GITHUB_REPOSITORY/git/refs/heads/%s"

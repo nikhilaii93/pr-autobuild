@@ -58,6 +58,38 @@ function isPROpenAndUnmerged {
     fi
 }
 
+function isCodeOwnerReviewPending {
+    log "Function isCodeOwnerReviewPending"
+
+    local pr_num
+    pr_num=$1
+
+    pendingReviews=$(getCall "$GIT_PENDING_REVIEWS_API" "$pr_num")
+
+    local userNames=()
+    while IFS='' read -r line; do userNames+=("$line"); done < <(jq -r '.users[].login' <<< "${pendingReviews}")
+    local teamNames=()
+    while IFS='' read -r line; do teamNames+=("$line"); done < <(jq -r '.teams[].name' <<< "${pendingReviews}")
+
+    #echo "User: ${userNames[@]}"
+    #echo "Team: ${teamNames[@]}"
+
+    local pendingReview
+    local j
+    pendingReview=false
+    j=0
+    while [ ${#CODE_OWNERS[@]} -gt $j ]; do
+        if [[ " ${userNames[*]} " =~ ${CODE_OWNERS[$j]} ]]; then
+            pendingReview=true
+        elif [[ " ${teamNames[*]} " =~ ${CODE_OWNERS[$j]} ]]; then
+            pendingReview=true
+        fi
+
+        j=$((j+1))
+    done
+    echo "$pendingReview"
+}
+
 function isApproved {
     log "Function isApproved"
 
@@ -103,6 +135,7 @@ function isApproved {
             
             log "Debug: Latest state $latestState for $loginName"
 
+            # Takes care of any changes requested by anyone + changes requested by codeowners
             if [ "$latestState" == "$PR_CHANGES_REQUESTED" ]; then 
                 changesRequested=true
                 break
@@ -120,7 +153,7 @@ function isApproved {
     if [ "$changesRequested" == true ]; then
         log "Debug: Changes requested"
         echo false
-    elif [ $approvalCount -ge $DEFAULT_APPROVAL_COUNT ]; then
+    elif [ $approvalCount -ge $DEFAULT_APPROVAL_COUNT ]; then 
         echo true
     else
         echo false
@@ -196,10 +229,12 @@ function checkReadyToBuildOrMerge {
     isPRValid=$(isPROpenAndUnmerged "$pr_num")
     local approved
     approved=$(isApproved "${reviewDetails[@]}")
-    local isUpdateSuccessful
+    local pendingCodeOwner
+    pendingCodeOwner=$(isCodeOwnerReviewPending "$pr_num")
+    local currentUpdateStatus
     currentUpdateStatus=$(updatePR "$pr_num")
 
-    if [ "$isPRValid" == true ] && [ "$approved" == true ]; then
+    if [ "$isPRValid" == true ] && [ "$approved" == true ] && [ "$pendingCodeOwner" == false ]; then
         log "PR $pr_num ready to build/merge"
         echo "$currentUpdateStatus"
     else
