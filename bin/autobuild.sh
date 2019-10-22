@@ -64,13 +64,22 @@ if [ "$event" == "pr-build-success" ]; then
 
 	readyToMerge=$(checkReadyToBuildOrMerge "$pr_num")
 
-	if [ "$readyToMerge" == true ]; then
+	if [ "$readyToMerge" == "$NOT_READY_STATUS" ]; then
+		echo "PR not valid or approved: $pr_num"
+
+		exit 0
+	elif [ "$readyToMerge" == "$UPDATED_STATUS" ]; then
+		triggerBuild "$pr_num"
+
+		exit 0
+	elif [ "$readyToMerge" == "$ALREADY_UPDATED_STATUS" ]; then
+		# try merging
 		mergeStatus=$(mergePR "$pr_num")
 		mergeSuccess=$(grep -o -i "$MERGE_SUCCESS_MESSAGE" <<< "$mergeStatus" | wc -l)
 
 		# shellcheck disable=SC2086
 		if [ $mergeSuccess -eq 1 ]; then 
-        	echo "Successfully merged $pr_num"
+            echo "Successfully merged $pr_num"
 
             if [ "$DELETE_BRANCH" == true ]; then
             	deleteStatus=$(deleteBranch $pr_num)
@@ -79,14 +88,17 @@ if [ "$event" == "pr-build-success" ]; then
             fi
 
             exit 0
-        else
-        	# TODO: only trigger build in case of update with master
-        	# Check mergeability separately
+        else 
         	echo "Merge failed for $pr_num"
-        	echo "This means branch has sonar issues/codeowner review pending. Exiting..."
-
-            exit 0
+        	echo "This means branch has sonar issues/review pending. Exiting..."
         fi
+	elif [ "$readyToMerge" == "$CONFLICT_STATUS" ]; then
+		echo "Conflict in PR: $pr_num"
+
+		exit 0
+	else
+		echo "Unknown status: $readyToBuild"
+		exit 1
 	fi
 else 
 	readyToBuild=$(checkReadyToBuildOrMerge "$pr_num")
